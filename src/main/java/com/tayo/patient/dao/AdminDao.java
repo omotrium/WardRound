@@ -19,4 +19,6 @@ public interface AdminDao {
     List<Patient> getPatient(Patient patient);
 
     Response removePatient(Patient patient);
+
+    Response editPatient(Patient patient);
 }

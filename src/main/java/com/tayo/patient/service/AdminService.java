@@ -48,4 +48,9 @@ public class AdminService {
     public Response removePatient(Patient patient) {
         return dao.removePatient(patient);
     }
+
+    public Response editPatient(Patient patient) {
+
+        return dao.editPatient(patient);
+    }
 }

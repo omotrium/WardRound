@@ -202,6 +202,41 @@ public class AdminDaoImpl implements AdminDao {
         return response;
     }
 
+    @Override
+    public Response editPatient(Patient patient) {
+        SimpleJdbcCall create_affiliateSimpleJdbcCall = new SimpleJdbcCall(jdbcTemplate);
+        create_affiliateSimpleJdbcCall.withProcedureName(baseUtilityPackage + ".edit_patient")
+                .withoutProcedureColumnMetaDataAccess()
+                .declareParameters(new SqlParameter("P_HOSPITAL", Types.VARCHAR),
+                        new SqlParameter("P_FIRST_NAME", Types.VARCHAR),
+                        new SqlParameter("P_LAST_NAME", Types.VARCHAR),
+                        new SqlParameter("P_WARD", Types.VARCHAR),
+                        new SqlParameter("P_ID", Types.VARCHAR),
+                        new SqlOutParameter("p_code", Types.VARCHAR),
+                        new SqlOutParameter("p_message", Types.VARCHAR))
+                .compile();
+
+        SqlParameterSource inParams = new MapSqlParameterSource()
+                .addValue("P_HOSPITAL", patient.getHospital())
+                .addValue("P_FIRST_NAME", patient.getFirstName())
+                .addValue("P_LAST_NAME", patient.getLastName())
+                .addValue("P_WARD", patient.getWard())
+                .addValue("P_ID", patient.getId());
+
+
+        Map<String, Object> returningResult = create_affiliateSimpleJdbcCall.execute(inParams);
+        String responseCode = (String) returningResult.get("p_code");
+        String validResponseCode = responseCode != null ? responseCode : "99";
+        String responseMsg = (String) returningResult.get("p_message");
+        String validResponseMsg = responseMsg != null ? responseMsg : "";
+
+        Response response = new Response();
+        response.setResponseCode(validResponseCode);
+        response.setResponseMessage(validResponseMsg);
+
+        return response;
+    }
+
 
 }
 

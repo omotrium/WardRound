@@ -149,4 +149,25 @@ public class AdminController {
         }
     }
 
+
+    @SuppressWarnings("all")
+    @RequestMapping(value = "/editPatient", method = RequestMethod.POST, consumes = {
+            MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE }, produces = {
+            MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+    public ResponseEntity<?> editPatient(@RequestBody Patient patient) {
+
+        Response response = adminService.editPatient(patient);
+
+        LOGGER.info("patient " + response);
+
+        if (response != null) {
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }else {
+            throw new GlobalRestException("99", "Oops Something went wrong");
+
+
+        }
+
+    }
+
 }
