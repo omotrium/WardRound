@@ -2,10 +2,7 @@ package com.tayo.patient.dao;
 
 
 
-import com.tayo.patient.model.Hospital;
-import com.tayo.patient.model.Patient;
-import com.tayo.patient.model.Response;
-import com.tayo.patient.model.User;
+import com.tayo.patient.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -237,7 +234,220 @@ public class AdminDaoImpl implements AdminDao {
         return response;
     }
 
+    @Override
+    public Response addHospital(Hospital hospital) {
 
+        SimpleJdbcCall create_affiliateSimpleJdbcCall = new SimpleJdbcCall(jdbcTemplate);
+        create_affiliateSimpleJdbcCall.withProcedureName(baseUtilityPackage + ".add_hospital")
+                .withoutProcedureColumnMetaDataAccess()
+                .declareParameters(new SqlParameter("P_NAME", Types.VARCHAR),
+                        new SqlParameter("P_LOCATION", Types.VARCHAR),
+                        new SqlOutParameter("p_code", Types.VARCHAR),
+                        new SqlOutParameter("p_message", Types.VARCHAR))
+                .compile();
+
+        SqlParameterSource inParams = new MapSqlParameterSource()
+                .addValue("P_NAME", hospital.getName())
+                .addValue("P_LOCATION", hospital.getLocation());
+
+
+        Map<String, Object> returningResult = create_affiliateSimpleJdbcCall.execute(inParams);
+        String responseCode = (String) returningResult.get("p_code");
+        String validResponseCode = responseCode != null ? responseCode : "99";
+        String responseMsg = (String) returningResult.get("p_message");
+        String validResponseMsg = responseMsg != null ? responseMsg : "";
+
+        Response response = new Response();
+        response.setResponseCode(validResponseCode);
+        response.setResponseMessage(validResponseMsg);
+
+        return response;
+    }
+
+    @Override
+    public Response createDiagnosis(Diagnosis diagnosis) {
+        SimpleJdbcCall create_affiliateSimpleJdbcCall = new SimpleJdbcCall(jdbcTemplate);
+        create_affiliateSimpleJdbcCall.withProcedureName(baseUtilityPackage + ".create_diagnosis")
+                .withoutProcedureColumnMetaDataAccess()
+                .declareParameters(new SqlParameter("P_PRESCRIPTION", Types.VARCHAR),
+                        new SqlOutParameter("p_code", Types.VARCHAR),
+                        new SqlOutParameter("p_message", Types.VARCHAR))
+                .compile();
+
+        SqlParameterSource inParams = new MapSqlParameterSource()
+                .addValue("P_PRESCRIPTION", diagnosis.getPrescription());
+
+
+        Map<String, Object> returningResult = create_affiliateSimpleJdbcCall.execute(inParams);
+        String responseCode = (String) returningResult.get("p_code");
+        String validResponseCode = responseCode != null ? responseCode : "99";
+        String responseMsg = (String) returningResult.get("p_message");
+        String validResponseMsg = responseMsg != null ? responseMsg : "";
+
+        Response response = new Response();
+        response.setResponseCode(validResponseCode);
+        response.setResponseMessage(validResponseMsg);
+
+        return response;
+    }
+
+    @Override
+    public Response removeDiagnosis(Diagnosis diagnosis) {
+
+
+        Response response = new Response();
+        SimpleJdbcCall update_daily_volumeSimpleJdbcCall = new SimpleJdbcCall(jdbcTemplate);
+        update_daily_volumeSimpleJdbcCall.withProcedureName(baseUtilityPackage + ".remove_diagnosis")
+                .withoutProcedureColumnMetaDataAccess()
+                .declareParameters(
+                        new SqlParameter("p_id", Types.VARCHAR),
+                        new SqlOutParameter("p_code", Types.VARCHAR),
+                        new SqlOutParameter("p_status", Types.VARCHAR))
+                .compile();
+        SqlParameterSource inParams = new MapSqlParameterSource()
+                .addValue("p_id", diagnosis.getId());
+        Map<String, Object> returningResult = update_daily_volumeSimpleJdbcCall.execute(inParams);
+        String responseCode = (String) returningResult.get("p_code");
+        String validResponseCode = responseCode != null ? responseCode : "99";
+        String responseMsg = (String) returningResult.get("p_status");
+        String validResponseMsg = responseMsg != null ? responseMsg : "";
+        response.setResponseCode(validResponseCode);
+        response.setResponseMessage(validResponseMsg);
+        return response;
+    }
+
+    @Override
+    public Response updateDiagnosis(Diagnosis diagnosis) {
+
+            SimpleJdbcCall create_affiliateSimpleJdbcCall = new SimpleJdbcCall(jdbcTemplate);
+            create_affiliateSimpleJdbcCall.withProcedureName(baseUtilityPackage + ".update_diagnosis")
+                    .withoutProcedureColumnMetaDataAccess()
+                    .declareParameters(new SqlParameter("P_ID", Types.VARCHAR),
+                            new SqlParameter("P_PRESCRIPTION", Types.VARCHAR),
+                            new SqlOutParameter("p_code", Types.VARCHAR),
+                            new SqlOutParameter("p_message", Types.VARCHAR))
+                    .compile();
+
+            SqlParameterSource inParams = new MapSqlParameterSource()
+                    .addValue("P_ID", diagnosis.getId())
+                    .addValue("P_PRESCRIPTION", diagnosis.getPrescription());
+
+
+            Map<String, Object> returningResult = create_affiliateSimpleJdbcCall.execute(inParams);
+            String responseCode = (String) returningResult.get("p_code");
+            String validResponseCode = responseCode != null ? responseCode : "99";
+            String responseMsg = (String) returningResult.get("p_message");
+            String validResponseMsg = responseMsg != null ? responseMsg : "";
+
+            Response response = new Response();
+            response.setResponseCode(validResponseCode);
+            response.setResponseMessage(validResponseMsg);
+
+            return response;
+        }
+
+    @Override
+    public List<Diagnosis> getDiagnosis(Diagnosis diagnosis) {
+
+        SimpleJdbcCall get_returns_on_cbn_salesSimpleJdbcCall = new SimpleJdbcCall(jdbcTemplate);
+
+
+        get_returns_on_cbn_salesSimpleJdbcCall.withProcedureName(baseUtilityPackage + ".get_diagnosis")
+                .withoutProcedureColumnMetaDataAccess()
+                .declareParameters(new SqlParameter("p_email", Types.VARCHAR),
+                        new SqlOutParameter("r_details", Types.REF_CURSOR))
+                .returningResultSet("r_details", new RowMapper<Diagnosis>() {
+                    @Override
+                    public Diagnosis mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        Diagnosis request = new Diagnosis();
+
+                        request.setPrescription(rs.getString(1));
+
+                        return request;
+                    }
+                });
+        get_returns_on_cbn_salesSimpleJdbcCall.compile();
+        SqlParameterSource inparams = new MapSqlParameterSource().addValue("p_email", diagnosis);
+        Map<String, Object> returningResultSet = get_returns_on_cbn_salesSimpleJdbcCall.execute(inparams);
+        List<Diagnosis> response = (List<Diagnosis>) returningResultSet.get("r_details");
+        return response == null || response.isEmpty() ? new ArrayList<>() : response;
+    }
+
+    @Override
+    public Response createInvestigation(Investigation investigation) {
+        SimpleJdbcCall create_affiliateSimpleJdbcCall = new SimpleJdbcCall(jdbcTemplate);
+        create_affiliateSimpleJdbcCall.withProcedureName(baseUtilityPackage + ".create_investigation")
+                .withoutProcedureColumnMetaDataAccess()
+                .declareParameters(new SqlParameter("P_NOTE", Types.VARCHAR),
+                        new SqlParameter("P_PATIENT_NAME", Types.VARCHAR),
+                        new SqlOutParameter("p_code", Types.VARCHAR),
+                        new SqlOutParameter("p_message", Types.VARCHAR))
+                .compile();
+
+        SqlParameterSource inParams = new MapSqlParameterSource()
+                .addValue("P_NOTE", investigation.getNote())
+                .addValue("P_PATIENT_NAME", investigation.getPatient().getFirstName());
+
+
+        Map<String, Object> returningResult = create_affiliateSimpleJdbcCall.execute(inParams);
+        String responseCode = (String) returningResult.get("p_code");
+        String validResponseCode = responseCode != null ? responseCode : "99";
+        String responseMsg = (String) returningResult.get("p_message");
+        String validResponseMsg = responseMsg != null ? responseMsg : "";
+
+        Response response = new Response();
+        response.setResponseCode(validResponseCode);
+        response.setResponseMessage(validResponseMsg);
+
+        return response;
+    }
+
+    @Override
+    public Response removeInvestigation(Investigation investigation) {
+         Response response = new Response();
+        SimpleJdbcCall update_daily_volumeSimpleJdbcCall = new SimpleJdbcCall(jdbcTemplate);
+        update_daily_volumeSimpleJdbcCall.withProcedureName(baseUtilityPackage + ".remove_investigation")
+                .withoutProcedureColumnMetaDataAccess()
+                .declareParameters(
+                        new SqlParameter("p_id", Types.VARCHAR),
+                        new SqlOutParameter("p_code", Types.VARCHAR),
+                        new SqlOutParameter("p_status", Types.VARCHAR))
+                .compile();
+        SqlParameterSource inParams = new MapSqlParameterSource()
+                .addValue("p_id", investigation.getId());
+        Map<String, Object> returningResult = update_daily_volumeSimpleJdbcCall.execute(inParams);
+        String responseCode = (String) returningResult.get("p_code");
+        String validResponseCode = responseCode != null ? responseCode : "99";
+        String responseMsg = (String) returningResult.get("p_status");
+        String validResponseMsg = responseMsg != null ? responseMsg : "";
+        response.setResponseCode(validResponseCode);
+        response.setResponseMessage(validResponseMsg);
+        return response;
+    }
+
+    @Override
+    public List<Investigation> getInvestigation(Investigation investigation) {
+        SimpleJdbcCall get_returns_on_cbn_salesSimpleJdbcCall = new SimpleJdbcCall(jdbcTemplate);
+         get_returns_on_cbn_salesSimpleJdbcCall.withProcedureName(baseUtilityPackage + ".get_investigation")
+                .withoutProcedureColumnMetaDataAccess()
+                .declareParameters(new SqlParameter("p_email", Types.VARCHAR),
+                        new SqlOutParameter("r_details", Types.REF_CURSOR))
+                .returningResultSet("r_details", new RowMapper<Diagnosis>() {
+                    @Override
+                    public Diagnosis mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        Diagnosis request = new Diagnosis();
+
+                        request.setPrescription(rs.getString(1));
+
+                        return request;
+                    }
+                });
+        get_returns_on_cbn_salesSimpleJdbcCall.compile();
+        SqlParameterSource inparams = new MapSqlParameterSource().addValue("p_email", investigation);
+        Map<String, Object> returningResultSet = get_returns_on_cbn_salesSimpleJdbcCall.execute(inparams);
+        List<Investigation> response = (List<Investigation>) returningResultSet.get("r_details");
+        return response == null || response.isEmpty() ? new ArrayList<>() : response;
+    }
 }
 
 

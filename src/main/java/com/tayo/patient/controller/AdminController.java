@@ -2,10 +2,7 @@ package com.tayo.patient.controller;
 
 
 import com.tayo.patient.exception.GlobalRestException;
-import com.tayo.patient.model.Hospital;
-import com.tayo.patient.model.Patient;
-import com.tayo.patient.model.Response;
-import com.tayo.patient.model.User;
+import com.tayo.patient.model.*;
 import com.tayo.patient.service.AdminService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -157,6 +154,161 @@ public class AdminController {
     public ResponseEntity<?> editPatient(@RequestBody Patient patient) {
 
         Response response = adminService.editPatient(patient);
+
+        LOGGER.info("patient " + response);
+
+        if (response != null) {
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }else {
+            throw new GlobalRestException("99", "Oops Something went wrong");
+
+
+        }
+
+    }
+
+    @SuppressWarnings("all")
+    @RequestMapping(value = "/addHospital", method = RequestMethod.POST, consumes = {
+            MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE }, produces = {
+            MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+    public ResponseEntity<?> addHospital(@RequestBody Hospital hospital) {
+
+        Response response = adminService.addHospital(hospital);
+
+        LOGGER.info("patient " + response);
+
+        if (response != null) {
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }else {
+            throw new GlobalRestException("99", "Oops Something went wrong");
+
+
+        }
+
+    }
+
+    @SuppressWarnings("all")
+    @RequestMapping(value = "/createDiagnosis", method = RequestMethod.POST, consumes = {
+            MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE }, produces = {
+            MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+    public ResponseEntity<?> createDiagnosis(@RequestBody Diagnosis diagnosis) {
+
+        Response response = adminService.createDiagnosis(diagnosis);
+
+        LOGGER.info("patient " + response);
+
+        if (response != null) {
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }else {
+            throw new GlobalRestException("99", "Oops Something went wrong");
+
+
+        }
+
+    }
+
+    @SuppressWarnings("all")
+    @RequestMapping(value = "/removeDiagnosis", method = RequestMethod.POST, consumes = {
+            MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE }, produces = {
+            MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+    public ResponseEntity<?> removeDiagnosis(@RequestBody Diagnosis diagnosis) {
+        try {
+
+            Response response = adminService.removeDiagnosis(diagnosis);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOGGER.error("********Oops Something went wrong **********" + e);
+            throw new GlobalRestException("99", e.toString());
+        }
+    }
+
+    @RequestMapping(value = "/updateDiagnosis", method = RequestMethod.POST, consumes = {
+            MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE }, produces = {
+            MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+    public ResponseEntity<?> updateDiagnosis(@RequestBody Diagnosis diagnosis) {
+
+        Response response = adminService.updateDiagnosis(diagnosis);
+
+        LOGGER.info("patient " + response);
+
+        if (response != null) {
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }else {
+            throw new GlobalRestException("99", "Oops Something went wrong");
+
+
+        }
+
+    }
+
+    @SuppressWarnings("all")
+    @RequestMapping(value = "/getDiagnosis", method = RequestMethod.POST, consumes = {
+            MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE }, produces = {
+            MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+    public ResponseEntity<?> getDiagnosis(@RequestBody Diagnosis diagnosis) {
+
+        List<Diagnosis> response = adminService.getDiagnosis(diagnosis);
+
+        LOGGER.info("patient " + response);
+
+        if (response != null) {
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }else {
+            throw new GlobalRestException("99", "Oops Something went wrong");
+
+
+        }
+
+    }
+
+    @SuppressWarnings("all")
+    @RequestMapping(value = "/createInvestigation", method = RequestMethod.POST, consumes = {
+            MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE }, produces = {
+            MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+    public ResponseEntity<?> createInvestigation(@RequestBody Investigation investigation) {
+
+        Response response = adminService.createInvestigation(investigation);
+
+        LOGGER.info("patient " + response);
+
+        if (response != null) {
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }else {
+            throw new GlobalRestException("99", "Oops Something went wrong");
+
+
+        }
+
+    }
+
+
+    @SuppressWarnings("all")
+    @RequestMapping(value = "/removeInvestigation", method = RequestMethod.POST, consumes = {
+            MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE }, produces = {
+            MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+    public ResponseEntity<?> removeInvestigation(@RequestBody Investigation investigation) {
+        try {
+
+            Response response = adminService.removeInvestigation(investigation);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOGGER.error("********Oops Something went wrong **********" + e);
+            throw new GlobalRestException("99", e.toString());
+        }
+    }
+
+
+    @SuppressWarnings("all")
+    @RequestMapping(value = "/getInvestigation", method = RequestMethod.POST, consumes = {
+            MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE }, produces = {
+            MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+    public ResponseEntity<?> getInvestigation(@RequestBody Investigation investigation) {
+
+        List<Investigation> response = adminService.getInvestigation(investigation);
 
         LOGGER.info("patient " + response);
 

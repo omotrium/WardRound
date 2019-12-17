@@ -1,10 +1,7 @@
 package com.tayo.patient.dao;
 
 
-import com.tayo.patient.model.Hospital;
-import com.tayo.patient.model.Patient;
-import com.tayo.patient.model.Response;
-import com.tayo.patient.model.User;
+import com.tayo.patient.model.*;
 
 import java.util.List;
 
@@ -21,4 +18,20 @@ public interface AdminDao {
     Response removePatient(Patient patient);
 
     Response editPatient(Patient patient);
+
+    Response addHospital(Hospital hospital);
+
+    Response createDiagnosis(Diagnosis diagnosis);
+
+    Response removeDiagnosis(Diagnosis diagnosis);
+
+    Response updateDiagnosis(Diagnosis diagnosis);
+
+    List<Diagnosis> getDiagnosis(Diagnosis diagnosis);
+
+    Response createInvestigation(Investigation investigation);
+
+    Response removeInvestigation(Investigation investigation);
+
+    List<Investigation> getInvestigation(Investigation investigation);
 }
